@@ -24,6 +24,7 @@ export async function checkCredentials(formData) {
   const session = await getSession();
   session.isLoggedIn = true;
   session.username = data.user.username;
+  session.name = data.user.name;
   session.role = data.user.role;
   await session.save();
 

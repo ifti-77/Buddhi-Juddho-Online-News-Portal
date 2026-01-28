@@ -1,9 +1,9 @@
 "use server";
 
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
-
+import { mkdir, writeFile, unlink } from "node:fs/promises";
+import { getSession } from "@/lib/session";
 // function getBaseUrl() {
 //   // Required because this runs on the server (Node) — relative fetch can fail
 //   // in many cases; absolute URL is safer. :contentReference[oaicite:2]{index=2}
@@ -20,6 +20,8 @@ export async function uploadNews(prevState, formData) {
   const content = (formData.get("content") ?? "").toString().trim();
   const category = (formData.get("category") ?? "").toString().trim();
   const isFeatured = (formData.get("isFeatured")==='yes'? true : false); // fallback
+  const session = await getSession();
+  const author = session?.name;
 
   // ---- Validation (collect all errors) ----
   if (!title) errors.title = ["Title is required"];
@@ -79,6 +81,7 @@ export async function uploadNews(prevState, formData) {
       body: JSON.stringify({
         title,
         content,
+        author,
         category,
         isFeatured,
         thumbnailPath: thumbnailUrl,
@@ -99,4 +102,52 @@ export async function uploadNews(prevState, formData) {
   } catch (err) {
     return { ok: false, errors: {}, message: err?.message || "Upload failed." };
   }
+}
+
+
+export async function replaceThumbnailWithNewId(updatedImage, current_image) {
+  if (!updatedImage) return current_image;
+
+  const uploadsDir = path.join(process.cwd(), "public", "uploads");
+  await mkdir(uploadsDir, { recursive: true });
+
+  // Decide extension (keep it simple + safe)
+  const extByType = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+  };
+
+  const newExt =
+    (path.extname(updatedImage.name) || extByType[updatedImage.type] || ".bin").toLowerCase();
+
+  // 1) write new file with NEW UUID
+  const newName = `${crypto.randomUUID()}${newExt}`;
+  const newAbs = path.join(uploadsDir, newName);
+
+  const buffer = Buffer.from(await updatedImage.arrayBuffer());
+  await writeFile(newAbs, buffer);
+
+  const newUrl = `/uploads/${newName}`;
+
+  // 2) delete old file (ignore if missing)
+  if (current_image) {
+    const rel = current_image.startsWith("/") ? current_image.slice(1) : current_image; // "uploads/old.jpg"
+    const oldAbs = path.join(process.cwd(), "public", rel);
+    await unlink(oldAbs).catch(() => {});
+  }
+
+  // 3) return new URL (store this in DB)
+  return newUrl;
+}
+
+export async function DeleteThumbnail(current_image) {
+  if (!current_image) return true;
+  if (current_image) {
+    const rel = current_image.startsWith("/") ? current_image.slice(1) : current_image; // "uploads/old.jpg"
+    const oldAbs = path.join(process.cwd(), "public", rel);
+    await unlink(oldAbs).catch(() => {});
+    return true;
+  }
+  return false;
 }

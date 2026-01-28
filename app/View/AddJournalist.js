@@ -1,3 +1,4 @@
+
 import { addJournalist } from "@/actions/addJournalist";
 
 export default function AddJournalist() {
