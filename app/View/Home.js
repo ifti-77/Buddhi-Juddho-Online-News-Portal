@@ -9,7 +9,7 @@ import thumb1 from '@/public/window.svg';
 import thumb2 from '@/public/next.svg';
 import thumb3 from '@/public/vercel.svg';
 import thumb4 from '@/public/window.svg';
-import { fetchNewsFromDB } from '@/lib/fetchNewsFromDB';
+import { fetchNewsFromDB } from '@/lib/newsInteractions';
 
 const Home = () => {
 

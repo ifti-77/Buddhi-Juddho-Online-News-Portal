@@ -1,7 +1,7 @@
-import NewsUploadForm from '@/app/View/NewsUploadForm'
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import LogoutOperation from '@/app/View/LogoutOperation';
+import AdminOperation from '@/app/View/AdminOperation';
 
 export default async function admin() {
   
@@ -23,8 +23,8 @@ export default async function admin() {
                 <li>Settings</li>
             </ul>
         </aside>
-        <section className='mx-auto bg-gray-400 border border-blue-400 '>
-            <NewsUploadForm/>
+        <section className='mx-auto bg-green-300 border border-blue-400 '>
+            <AdminOperation/>
         </section>
         <LogoutOperation />
     </div>
