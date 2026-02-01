@@ -1,6 +1,20 @@
 import dbConnect from "@/lib/mongodb";
 import newsCollection from "@/lib/models/newsCollection";
 
+
+export async function GET(request) {
+  
+    const { searchParams } =  new URL(request.url);
+    const id =  searchParams.get('id');
+    await dbConnect();
+  try {
+    const newsItems = await newsCollection.findOne({_id: decodeURIComponent(id)})
+    return new Response(JSON.stringify(newsItems), { status: 200 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to fetch news items' }), { status: 500 });
+  }
+}
+
 export  async function POST(req)
 {
     const { pointerChar } = await req.json();

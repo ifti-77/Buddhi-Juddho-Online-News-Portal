@@ -6,7 +6,6 @@ import AdminOperation from '@/app/View/AdminOperation';
 export default async function admin() {
   
   const session = await getSession();
-  console.log("Session in admin page:", session);
   if(!session.isLoggedIn) {
     redirect('/Authentication');
   }

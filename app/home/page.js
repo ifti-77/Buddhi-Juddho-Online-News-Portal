@@ -1,13 +1,10 @@
 "use client"
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 // Placeholder images – swap these with your own
 import heroImg from '@/public/vercel.svg';
-import thumb1 from '@/public/window.svg';
-import thumb2 from '@/public/next.svg';
-import thumb3 from '@/public/vercel.svg';
-import thumb4 from '@/public/window.svg';
 import { fetchNewsFromDB } from '@/lib/newsInteractions';
 
 export default function home() {
@@ -24,7 +21,18 @@ export default function home() {
     SetNews(newsFromDb);
   }
 
-
+  const navCategories = [
+    { label: 'সর্বশেষ', href: '#' },
+    { label: 'বাংলাদেশ', href: '#' },
+    { label: 'রাজনীতি', href: '#' },
+    { label: 'বিশ্ব', href: '#' },
+    { label: 'বাণিজ্য', href: '#' },
+    { label: 'মতামত', href: '#' },
+    { label: 'খেলা', href: '#' },
+    { label: 'বিনোদন', href: '#' },
+    { label: 'চাকরি', href: '#' },
+    { label: 'জীবনযাপন', href: '#' },
+  ];
 
 
   // Top navigation categories (Bangla).
@@ -83,36 +91,44 @@ export default function home() {
       </section>
 
       {/* Category cards section */}
-      <section className="container mx-auto px-4 pb-8 grid md:grid-cols-3 gap-6">
-        {Array.isArray(news) && news.length > 0 && news.map((newItem) => (
-          <article
-            key={newItem._id} // better than index
-            className="bg-white rounded shadow overflow-hidden hover:shadow-lg transition-shadow duration-200"
-          >
-            <div className="relative h-40">
-              <Image
-                src={newItem.thumbnailPath} // choose one
-                alt={newItem.category || "news"}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                className="object-cover"
-              />
-            </div>
+      {navCategories.map(cat => (
+        <section className="container mx-auto px-4 pb-8 grid md:grid-cols-3 gap-6" key={cat.label}>
+          <h3>{cat.label}</h3>
+          {Array.isArray(news) && news.length > 0 && news.map((newItem) => (
+            cat.label === newItem.category &&
+            <div key={newItem._id}>
+              <article
+                key={newItem._id} // better than index
+                className="bg-white rounded shadow overflow-hidden hover:shadow-lg transition-shadow duration-200"
+              >
+                <div className="relative h-40">
+                  <Image
+                    src={newItem.thumbnailPath} // choose one
+                    alt={newItem.category || "news"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
 
-            <div className="p-4">
-              <span className="text-red-600 text-xs font-bold uppercase tracking-wide">
-                {newItem.category}
-              </span>
-              <h4 className="text-lg font-semibold mt-1 text-gray-800 leading-snug">
-                {newItem.title}
-              </h4>
-              <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-                {newItem.content}
-              </p>
+                <div className="p-4">
+                  <span className="text-red-600 text-xs font-bold uppercase tracking-wide">
+                    {newItem.category}
+                  </span>
+                  <h4 className="text-lg font-semibold mt-1 text-gray-800 leading-snug">
+                    {newItem.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+                    {newItem.content}
+                  </p>
+                </div>
+              </article>
+              <Link href={`/home/${encodeURIComponent(newItem.category)}`}>
+                Read More
+              </Link>
             </div>
-          </article>
-        ))}
-      </section>
+          ))}
+        </section>))}
 
     </main>
   );

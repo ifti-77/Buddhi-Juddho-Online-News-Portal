@@ -5,7 +5,7 @@ import newscollection from '@/lib/models/newsCollection';
 export async function GET() {
   await dbConnect();
   try {
-    const newsItems = await newscollection.find({}).sort({ publishedAt: -1 });
+    const newsItems = await newscollection.find({requested: "approved"}).sort({ publishedAt: -1 });
     return new Response(JSON.stringify(newsItems), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: 'Failed to fetch news items' }), { status: 500 });
