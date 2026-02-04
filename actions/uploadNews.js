@@ -22,11 +22,14 @@ export async function uploadNews(prevState, formData) {
   const isFeatured = (formData.get("isFeatured")==='yes'? true : false); // fallback
   const session = await getSession();
   const author = session?.name;
+  const authorID = session?.username;
 
-  // ---- Validation (collect all errors) ----
+ 
   if (!title) errors.title = ["Title is required"];
   if (!content) errors.content = ["Content is required"];
   if (!category) errors.category = ["Category is required"];
+  if (!authorID) errors.authorID = ["Author ID is required"];
+  if (!author) errors.author = ["Author is required"];
 
   if (title && (title.length < 4 || title.length > 200)) {
     errors.title = [...(errors.title || []), "Title must be 4–200 characters"];
@@ -82,6 +85,7 @@ export async function uploadNews(prevState, formData) {
         title,
         content,
         author,
+        authorID,
         category,
         isFeatured,
         thumbnailPath: thumbnailUrl,

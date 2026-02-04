@@ -46,10 +46,34 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <article className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-[#f8f7f4] min-h-screen py-8">
+      <article className="container mx-auto px-4 max-w-4xl bg-white border-2 border-gray-300">
+        {/* Article Header */}
+        <div className="border-b-2 border-black p-6">
+          <div className="mb-3">
+            <span className="text-xs font-bold uppercase tracking-widest border-b-2 border-gray-400 inline-block pb-1">
+              {userDesiredNews.category ?? decodeURIComponent(category)}
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
+            {userDesiredNews.title}
+          </h1>
+          <div className="flex items-center gap-4 text-sm text-gray-600 border-t border-gray-300 pt-3">
+            <span className="font-semibold">লেখক: {userDesiredNews.author}</span>
+            <span>|</span>
+            <time dateTime={userDesiredNews.publishedAt}>
+              {new Date(userDesiredNews.publishedAt).toLocaleDateString("bn-BD", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </time>
+          </div>
+        </div>
+
+        {/* Featured Image */}
         {userDesiredNews.thumbnailPath && (
-          <div className="relative w-full h-96">
+          <div className="relative w-full h-96 border-b border-gray-300">
             <Image
               src={userDesiredNews.thumbnailPath}
               alt={userDesiredNews.title}
@@ -60,31 +84,10 @@ export default function NewsPage() {
           </div>
         )}
 
-        <div className="p-6 md:p-8">
-          <div className="mb-4">
-            <span className="inline-block bg-blue-600 text-white px-4 py-1 rounded-full text-sm">
-              {userDesiredNews.category ?? decodeURIComponent(category)}
-            </span>
-          </div>
-
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            {userDesiredNews.title}
-          </h1>
-
-          <div className="flex items-center gap-4 text-gray-600 text-sm mb-6 border-b pb-4">
-            <span className="font-medium">By {userDesiredNews.author}</span>
-            <span>•</span>
-            <time dateTime={userDesiredNews.publishedAt}>
-              {new Date(userDesiredNews.publishedAt).toLocaleDateString("bn-BD", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </time>
-          </div>
-
-          <div className="prose prose-lg max-w-none">
-            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+        {/* Article Content */}
+        <div className="p-8">
+          <div className="text-lg leading-relaxed md:columns-2 md:gap-8">
+            <p className="text-gray-800 whitespace-pre-wrap first-letter:text-6xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:leading-none">
               {userDesiredNews.content}
             </p>
           </div>

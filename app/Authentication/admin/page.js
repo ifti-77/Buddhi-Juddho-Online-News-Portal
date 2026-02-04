@@ -6,26 +6,31 @@ import AdminOperation from '@/app/View/AdminOperation';
 export default async function admin() {
   
   const session = await getSession();
-  if(!session.isLoggedIn) {
+  if(!session.isLoggedIn || session.role !== "admin") {
     redirect('/Authentication');
   }
   
     return (
-    <div>
-        <h1>Admin Page</h1>
-        <p>Welcome {session.username}.</p>
-        <aside>
-            <h2>Sidebar</h2>
-            <ul>
-                <li>Manage Users</li>
-                <li>Manage News</li>
-                <li>Settings</li>
-            </ul>
-        </aside>
-        <section className='mx-auto bg-green-300 border border-blue-400 '>
-            <AdminOperation/>
-        </section>
-        <LogoutOperation />
+    <div className="bg-[#f8f7f4] min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        {/* Admin Header */}
+        <div className="bg-white border-2 border-gray-300 p-6 mb-6">
+          <div className="border-b-4 border-black pb-4 mb-4">
+            <h1 className="text-3xl font-bold uppercase tracking-wide">প্রশাসক প্যানেল</h1>
+          </div>
+          <div className="flex justify-between items-center">
+            <p className="text-lg">
+              স্বাগতম, <span className="font-bold">{session.username}</span>
+            </p>
+            <LogoutOperation />
+          </div>
+        </div>
+
+        {/* Admin Operations */}
+        <div className="bg-white border-2 border-gray-300">
+          <AdminOperation role={session.role} username={session.username} />
+        </div>
+      </div>
     </div>
   )
 }

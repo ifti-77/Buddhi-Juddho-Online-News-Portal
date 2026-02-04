@@ -17,12 +17,13 @@ export async function POST(request) {
     try {
       await dbConnect();
 
-      const { title, content, category, author, isFeatured, thumbnailPath } = await request.json();
+      const { title, content, category, author, authorID, isFeatured, thumbnailPath } = await request.json();
 
       const newNews = new newscollection({
         title,
         content,
-        author: author, // Default author
+        author: author, 
+        authorID: authorID, 
         category,
         thumbnailPath,
         requested: "pending", // Default requested status
@@ -44,7 +45,7 @@ export async function PUT(request) {
   try {
     await dbConnect();
 
-    const { _id, title, content, category, isFeatured, thumbnailPath } = await request.json();
+    const { _id, title, content, category, featured, thumbnailPath } = await request.json();
 
     const result = await newscollection.updateOne(
       { _id },
@@ -54,7 +55,7 @@ export async function PUT(request) {
           content,
           category,
           thumbnailPath,
-          featured: isFeatured ?? false,
+          featured: featured ?? false,
         },
       },
       { runValidators: true }

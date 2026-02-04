@@ -8,56 +8,76 @@ import NewsList from "./NewsList";
 import RequestedNews from "./RequestedNews";
 
 
-export default function AdminOperation() {
+export default function AdminOperation({role, username}) {
 
     const [activeTab, setActiveTab] = useState('addJournalist');
 
     return (
         <div>
-            <div className={`mx-2 my-3 bg-blue-300 py-2.5 px-6 border-green-300 rounder-sm
-                            flex gap-4 flex-wrap`}>
-                <button className="mx-1 my-2 px-6 py-2 border-none rounded-sm
-                                bg-green-500 text-white hover:bg-green-700"
-                    onClick={() => setActiveTab("addJournalist")}>
-                    Assign Journalist
-                </button>
-                <button className="mx-1 my-2 px-6 py-2 border-none rounded-sm
-                                bg-orange-500 text-white hover:bg-orange-700 "
-                    onClick={() => setActiveTab("manageJournalists")}>
-                    Manage Journalists
-                </button>
-                <button className="mx-1 my-2 px-6 py-2 border-none rounded-sm
-                                bg-purple-500 text-white hover:bg-purple-700 "
-                    onClick={() => setActiveTab("uploadNews")}>
-                    Upload News
-                </button>
-                <button className="mx-1 my-2 px-6 py-2 border-none rounded-sm
-                                bg-indigo-500 text-white hover:bg-indigo-700 "
-                    onClick={() => setActiveTab("manageNews")}>
-                    Manage News
-                </button>
-                <button className="mx-1 my-2 px-6 py-2 border-none rounded-sm
-                                bg-gray-500 text-white hover:bg-gray-700 "
-                    onClick={() => setActiveTab("requestedNews")}>
-                    Requested News
-                </button>
+            {/* Tab Navigation */}
+            <div className="border-b-2 border-gray-300 p-4">
+                <div className="flex gap-2 flex-wrap">
+                    <button 
+                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                            activeTab === 'addJournalist' 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        onClick={() => setActiveTab("addJournalist")}
+                    >
+                        সাংবাদিক নিয়োগ
+                    </button>
+                    <button 
+                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                            activeTab === 'manageJournalists' 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        onClick={() => setActiveTab("manageJournalists")}
+                    >
+                        সাংবাদিক তালিকা
+                    </button>
+                    <button 
+                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                            activeTab === 'uploadNews' 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        onClick={() => setActiveTab("uploadNews")}
+                    >
+                        সংবাদ আপলোড
+                    </button>
+                    <button 
+                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                            activeTab === 'manageNews' 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        onClick={() => setActiveTab("manageNews")}
+                    >
+                        সংবাদ পরিচালনা
+                    </button>
+                    <button 
+                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                            activeTab === 'requestedNews' 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        onClick={() => setActiveTab("requestedNews")}
+                    >
+                        অনুরোধকৃত সংবাদ
+                    </button>
+                </div>
             </div>
-            {activeTab === 'addJournalist' && (<div>
-                <AddJournalist />
 
-            </div>)}
-            {activeTab === 'manageJournalists' && (<div>
-                <JournalistList />
-            </div>)}
-            {activeTab === 'uploadNews' && (<div>
-                <NewsUploadForm />
-            </div>)}
-            {activeTab === 'manageNews' && (<div>
-                <NewsList />
-            </div>)}
-            {activeTab === 'requestedNews' && (<div>
-                <RequestedNews />
-            </div>)}
+            {/* Tab Content */}
+            <div className="p-6">
+                {activeTab === 'addJournalist' && <AddJournalist />}
+                {activeTab === 'manageJournalists' && <JournalistList />}
+                {activeTab === 'uploadNews' && <NewsUploadForm />}
+                {activeTab === 'manageNews' && <NewsList role={role} journalistUsername={username} />}
+                {activeTab === 'requestedNews' && <RequestedNews />}
+            </div>
         </div>
     )
 }

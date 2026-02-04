@@ -58,7 +58,7 @@ export default function RequestedNews() {
                     {requestednews.map(item => (
                         <div key={item._id}>
                             <li>{item.title} - {item.category}- {item.author}
-                                <button><Link href={`/${item.category}/${item._id}`} target="_blank">Read More</Link></button>
+                                <button><Link href={`/home/${item.category}/${item._id}`} target="_blank">Read More</Link></button>
                                 <button onClick={() => confirm("Approve this news?") && handleChangingRequestedStatus(item._id, 'approved')}>Approve</button>
                                 <button onClick={() => {
                                     confirm("Decline this news?") && handleChangingRequestedStatus(item._id, 'declined')
@@ -76,7 +76,7 @@ export default function RequestedNews() {
                     {requestednews.map(item => (
                         <div key={item._id}>
                             <li>{item.title} - {item.category}- {item.author}
-                                <button><Link href={`/${item.category}/${item._id}`} target="_blank">Read More</Link></button>
+                                <button><Link href={`/home/${item.category}/${item._id}`} target="_blank">Read More</Link></button>
                                 <button onClick={() => confirm("Approve this news?") && handleChangingRequestedStatus(item._id, 'approved')}>Approve</button>
                                 <button onClick={() => {
                                     confirm("Are you sure you want to delete this news item?") && filterOutNews(item._id, item.thumbnailPath)

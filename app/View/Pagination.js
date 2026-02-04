@@ -39,29 +39,29 @@ export default function Pagination({ totalPages }) {
   const isLast = currentPage === totalPages;
 
   return (
-    <nav className="flex justify-center mt-8" aria-label="Pagination">
-      <div className="inline-flex items-center rounded-md border bg-white shadow-sm overflow-hidden">
+    <nav className="flex justify-center my-8 pb-8" aria-label="Pagination">
+      <div className="inline-flex items-center border-2 border-gray-300 bg-white overflow-hidden">
         <button
           onClick={() => goTo(currentPage - 1)}
           disabled={isFirst}
-          className={`px-3 py-2 border-r text-sm ${
-            isFirst ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-50"
+          className={`px-4 py-2 border-r-2 border-gray-300 font-bold text-sm ${
+            isFirst ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-100"
           }`}
         >
-          ‹
+          ‹ পূর্ববর্তী
         </button>
 
         {pages.map((p, idx) =>
           p === "..." ? (
-            <span key={`dots-${idx}`} className="px-3 py-2 text-sm text-gray-500 border-r">
+            <span key={`dots-${idx}`} className="px-4 py-2 text-sm text-gray-500 border-r-2 border-gray-300">
               …
             </span>
           ) : (
             <button
               key={p}
               onClick={() => goTo(p)}
-              className={`px-3 py-2 text-sm border-r hover:bg-gray-50 ${
-                p === currentPage ? "bg-blue-600 text-white hover:bg-blue-600" : ""
+              className={`px-4 py-2 text-sm border-r-2 border-gray-300 font-bold hover:bg-gray-100 ${
+                p === currentPage ? "bg-black text-white hover:bg-gray-800" : ""
               }`}
             >
               {p}
@@ -72,11 +72,11 @@ export default function Pagination({ totalPages }) {
         <button
           onClick={() => goTo(currentPage + 1)}
           disabled={isLast}
-          className={`px-3 py-2 text-sm ${
-            isLast ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-50"
+          className={`px-4 py-2 font-bold text-sm ${
+            isLast ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-100"
           }`}
         >
-          ›
+          পরবর্তী ›
         </button>
       </div>
     </nav>

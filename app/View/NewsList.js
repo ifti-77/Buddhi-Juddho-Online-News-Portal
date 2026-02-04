@@ -6,7 +6,7 @@ import Image from "next/image";
 import { replaceThumbnailWithNewId } from "@/actions/uploadNews";
 import Link from "next/link";
 
-export default function NewsList() {
+export default function NewsList({role, journalistUsername}) {
 
     const [news, setNews] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -21,10 +21,16 @@ export default function NewsList() {
 
             const response = await fetchNewsFromDB();
             const data = await response
-            setNews(data);
+            if( role === "admin"){
+                setNews(data);
+            }else
+            {
+                const filteredNews = data.filter(newsItem => newsItem.authorID === journalistUsername);
+                setNews(filteredNews);
+            }
         }
         fetchNews();
-    }, []);
+    }, [journalistUsername]);
 
     useEffect(() => {
         async function fetchSpecificNews() {
@@ -36,7 +42,7 @@ export default function NewsList() {
         setTimeout(() => {
             fetchSpecificNews();
         }, 1000);
-    }, [searchTerm]);
+    }, [journalistUsername, searchTerm]);
 
     const handleSearchInputChange = useEffectEvent((e) => {
         setSearchTerm(e.target.value.trimStart().toLowerCase());
@@ -60,6 +66,8 @@ export default function NewsList() {
     const handleUpdateFormSubmit = async (_id, current_thumbnail, e) => {
         e.preventDefault();
         setIsPending(true);
+        console.log("checking:",isfeaturedinput);
+        
         // Perform update operation here
         const thumbnailPath = e.target.thumbnail.files[0] ? await replaceThumbnailWithNewId(e.target.thumbnail.files[0], current_thumbnail) : current_thumbnail;
         const response = await updateNewsIntoDB({ _id: _id, title: updateTitleinput, content: updateContentinput, category: e.target.category.value, featured: isfeaturedinput, thumbnailPath: thumbnailPath })
@@ -95,9 +103,9 @@ export default function NewsList() {
             <label>News List</label>
             <ul>
                 {news.map(item => (
-                    item.requested === "approved" && <div key={item._id}>
+                    (role!=='admin' || item.requested === "approved") && <div key={item._id}>
                         <li>{item.title} - {item.category}
-                            <button><Link href={`/${item.category}/${item._id}`} target="_blank">Read More</Link></button>
+                            <button><Link href={`/home/${item.category}/${item._id}`} target="_blank">Read More</Link></button>
                             <button onClick={() => handleUpdateFormOpen(item._id, item.title, item.content, item.featured)}>{openNewsUpdateForm === item._id ? "Close Edit" : "Edit"}</button>
                             <button onClick={() => {
                                 confirm("Are you sure you want to delete this news item?") && filterOutNews(item._id, item.thumbnailPath)

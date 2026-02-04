@@ -4,14 +4,13 @@ import {logoutOperation} from "@/actions/logoutOperation";
 export default function LogoutOperation() {
 
     return (
-        <div>
-            <form action={logoutOperation}>
-
-                <button type="submit"
-                    className="mx-auto px-6 py-2.5 border-none rounded-sm bg-red-500 hover:bg-red-600 text-white cursor-pointer">
-                    Logout
-                </button>
-            </form>
-        </div>
+        <form action={logoutOperation}>
+            <button 
+                type="submit"
+                className="px-6 py-2 bg-black text-white font-bold uppercase text-sm tracking-wide hover:bg-gray-800 transition-colors"
+            >
+                প্রস্থান
+            </button>
+        </form>
     )
 }

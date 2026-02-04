@@ -14,7 +14,7 @@ export async function checkCredentials(formData) {
     cache: "no-store",
   });
 
-  const data = await res.json(); // <-- THIS is { ok, user } or { ok:false, error }
+  const data = await res.json(); 
 
   // IMPORTANT: if login failed, user won't exist
   if (!res.ok || !data.ok) {
@@ -27,6 +27,6 @@ export async function checkCredentials(formData) {
   session.name = data.user.name;
   session.role = data.user.role;
   await session.save();
+  session.isLoggedIn && session.role === "admin"? redirect("/Authentication/admin"): redirect("/Authentication/journalist");
 
-  redirect("/Authentication/admin");
 }
