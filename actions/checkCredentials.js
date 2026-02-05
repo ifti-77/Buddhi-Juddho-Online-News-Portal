@@ -26,7 +26,24 @@ export async function checkCredentials(formData) {
   session.username = data.user.username;
   session.name = data.user.name;
   session.role = data.user.role;
+  session.status = data.user.status;
   await session.save();
-  session.isLoggedIn && session.role === "admin"? redirect("/Authentication/admin"): redirect("/Authentication/journalist");
+  console.log(session);
+  
+  if(session.isLoggedIn && session.role === "admin")
+  {  
+    redirect("/Authentication/admin") 
+  }
+  else if(session.isLoggedIn && session.role === "editor")
+  {
+    redirect("/Authentication/editor")
+  }
+  else if(session.isLoggedIn && session.role === "reporter")
+  {
+    redirect("/Authentication/journalist");
+  }else
+  {
+    redirect("/Authentication");
+  }
 
 }

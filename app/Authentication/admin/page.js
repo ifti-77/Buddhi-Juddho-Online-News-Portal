@@ -13,20 +13,20 @@ export default async function admin() {
     return (
     <div className="bg-[#f8f7f4] min-h-screen">
       <div className="container mx-auto px-4 py-8">
-        {/* Admin Header */}
+
         <div className="bg-white border-2 border-gray-300 p-6 mb-6">
           <div className="border-b-4 border-black pb-4 mb-4">
-            <h1 className="text-3xl font-bold uppercase tracking-wide">প্রশাসক প্যানেল</h1>
+            <h1 className="text-3xl font-bold uppercase tracking-wide">প্রকাশক ও সম্পাদক প্যানেল</h1>
           </div>
           <div className="flex justify-between items-center">
             <p className="text-lg">
-              স্বাগতম, <span className="font-bold">{session.username}</span>
+              স্বাগতম, <span className="font-bold">{session.name}</span>
             </p>
             <LogoutOperation />
           </div>
         </div>
 
-        {/* Admin Operations */}
+
         <div className="bg-white border-2 border-gray-300">
           <AdminOperation role={session.role} username={session.username} />
         </div>

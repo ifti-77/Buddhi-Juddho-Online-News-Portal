@@ -3,14 +3,11 @@ import journalists from "@/lib/models/journalists";
 
 export async function GET() {
   try {
-    await dbConnect(); // ✅ required
+    await dbConnect(); 
 
-    const availableJournalists = await journalists
-      .find({
-        status: "active",
+    const availableJournalists = await journalists.find({
         role: { $in: ["reporter", "editor"] },
-      })
-      .select("-password -__v");
+      }).select("-password -__v");
 
     return Response.json(availableJournalists, { status: 200 });
   } catch (error) {

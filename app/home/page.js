@@ -23,16 +23,34 @@ export default function home() {
 
     const newsFromDb = await fetchNewsFromDB();
     SetNews(newsFromDb);
+    let count = 0;
     const todayNewsFiltered = newsFromDb.filter(item => {
       if (!item.publishedAt) return false;
       const today = new Date().toISOString().slice(0, 10);
-      return new Date(item.publishedAt).toISOString().slice(0, 10) === today;
+      if (new Date(item.publishedAt).toISOString().slice(0, 10) === today && count < 6) {
+        SetNews(prevNews => prevNews.filter(newsItem => newsItem._id !== item._id))
+        count++;
+        return item
+      }
     });
+
     SetTodayNews(todayNewsFiltered);
     SetTickerItems(todayNewsFiltered.filter(item => item.featured === true).map(item => item.title));
 
     SetFeaturedNews(newsFromDb.filter(item => item.featured === true));
-    SetSideStories(newsFromDb.filter(item => item.featured === true).filter((item, index) => index < 4 && index > 0));
+    SetFeaturedNews(newsFromDb.filter(item => item.featured == true).filter((item, index) => {
+      if (index === 0) {
+        SetNews(prevNews => prevNews.filter(newsItem => newsItem._id !== item._id))
+        return item
+      }
+    }))
+
+    SetSideStories(newsFromDb.filter(item => item.featured === true).filter((item, index) => {
+      if (index < 4 && index > 0) {
+        SetNews(prevNews => prevNews.filter(newsItem => newsItem._id !== item._id))
+        return item
+      }
+    }));
   }
 
   const navCategories = [
@@ -46,10 +64,6 @@ export default function home() {
     { label: 'চাকরি' },
     { label: 'জীবনযাপন' },
   ];
-
-
-  console.log(tickerItems);
-
 
 
   return (
@@ -84,6 +98,15 @@ export default function home() {
               <p className="text-xs text-gray-600 uppercase tracking-wide">
                 {featuredNews[0]?.publishedAt ? new Date(featuredNews[0].publishedAt).toLocaleDateString('bn-BD') : ''}
               </p>
+              <p className="text-sm text-gray-700 leading-relaxed line-clamp-3 mb-3">
+                {featuredNews[0]?.content}
+              </p>
+              <Link
+                href={`/home/${encodeURIComponent(featuredNews[0]?.category)}/${encodeURIComponent(featuredNews[0]?._id)}`}
+                className="text-xs font-semibold uppercase tracking-wide hover:underline"
+              >
+                বিস্তারিত পড়ুন →
+              </Link>
             </div>
           </article>
 
@@ -98,19 +121,32 @@ export default function home() {
                   <h3 className="text-sm font-bold leading-tight">
                     {story.title}
                   </h3>
+                  <p className="text-xs text-gray-600 uppercase tracking-wide">
+                    {story.publishedAt ? new Date(story.publishedAt).toLocaleDateString('bn-BD') : ''}
+                  </p>
+                  <p className="text-sm text-gray-700 leading-relaxed line-clamp-3 mb-3">
+                    {story.content}
+                  </p>
+                  <Link
+                    href={`/home/${encodeURIComponent(story.category)}/${encodeURIComponent(story._id)}`}
+                    className="text-xs font-semibold uppercase tracking-wide hover:underline"
+                  >
+                    বিস্তারিত পড়ুন →
+                  </Link>
                 </div>
               </article>
             ))}
           </div>
         </div>
       </section>
+
       {/* latest news */}
       <section className="container mx-auto px-4 py-6 border-b border-gray-300">
         <h3 className="text-2xl font-bold border-b-2 border-black pb-2 mb-4 uppercase tracking-wide">
           {"সর্বশেষ খবর"}
         </h3>
         <div className="grid md:grid-cols-3 gap-6">
-          {(Array.isArray(todayNews) && todayNews.length > 0 )? todayNews.map((newItem, index) => (
+          {(Array.isArray(todayNews) && todayNews.length > 0) ? todayNews.map((newItem, index) => (
             index < 5 && <article
               key={newItem._id}
               className="bg-white border border-gray-300 overflow-hidden hover:shadow-lg transition-shadow"
@@ -128,6 +164,9 @@ export default function home() {
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-700 border-b border-gray-400 inline-block pb-1 mb-2">
                   {newItem.category}
                 </span>
+                <span className="text-xs text-gray-600 uppercase tracking-wide">
+                  {newItem.publishedAt ? new Date(newItem.publishedAt).toLocaleDateString('bn-BD') : ''}
+                </span>
                 <h4 className="text-lg font-bold leading-tight mb-2">
                   {newItem.title}
                 </h4>
@@ -142,18 +181,23 @@ export default function home() {
                 </Link>
               </div>
             </article>
-          )): <p className="text-lg font-bold leading-tight mb-2"> No new News availabe today</p>}
+          )) : <p className="text-lg font-bold leading-tight mb-2"> No new News availabe today</p>}
+          {(Array.isArray(todayNews) && todayNews.length > 5) && <Link className="" href={`/home/${encodeURIComponent("সর্বশেষ")}`}> View All News</Link>}
         </div>
       </section>
 
       {/* Category Sections */}
       {navCategories.map(cat => (
         <section key={cat.label} className="container mx-auto px-4 py-6 border-b border-gray-300">
-          <h3 className="text-2xl font-bold border-b-2 border-black pb-2 mb-4 uppercase tracking-wide">
-            {cat.label}
-          </h3>
+          <div className='flex justify-between border-b-2 border-black pb-2 mb-4'>
+
+            <h3 className="text-2xl font-bold  uppercase tracking-wide">
+              {cat.label}
+            </h3>
+            <Link className="" href={`/home/${encodeURIComponent(cat.label)}`}> View All News</Link>
+          </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {Array.isArray(news) && news.length > 0 && news.map((newItem) => (
+            {(Array.isArray(news) && news.length > 0) && news.map((newItem) => (
               cat.label === newItem.category &&
               <article
                 key={newItem._id}
@@ -187,6 +231,7 @@ export default function home() {
                 </div>
               </article>
             ))}
+            {news.filter(item => item.category === cat.label).length === 0 && <p className="text-lg font-bold leading-tight mb-2"> No new News availabe today</p>}
           </div>
         </section>
       ))}

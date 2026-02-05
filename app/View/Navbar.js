@@ -1,5 +1,6 @@
-import React from 'react'
+
 import Link from 'next/link'
+import Image from 'next/image'
 import { getSession } from '@/lib/session'
 
 const Navbar = async () => {
@@ -8,19 +9,34 @@ const Navbar = async () => {
     return (
         <nav className='bg-white border-b-4 border-black'>
             {/* Newspaper Masthead */}
-            <div className='border-b border-gray-300'>
-                <div className='container mx-auto px-4 py-4'>
-                    <div className='text-center'>
-                        <h1 className='text-5xl font-bold tracking-wide mb-1' style={{fontFamily: 'Georgia, serif'}}>
-                            বুদ্ধিযুদ্ধো
-                        </h1>
-                        <p className='text-xs text-gray-600 tracking-widest uppercase'>
-                            {new Date().toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            <div className="border-b border-gray-300 bg-white">
+                <div className="container mx-auto px-4 py-1 sm:py-1">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        {/* LEFT: Logo */}
+                        <div className="relative w-80 h-24 sm:w-110 sm:h-16 md:w-185 md:h-30.5 ">
+                            <Image
+                                src="/Buddhi-Juddho-NavBar-Icon.png"
+                                alt="বুদ্ধিযুদ্ধো Logo"
+                                fill
+                                priority
+                                sizes="(max-width: 640px) 320px, (max-width: 768px) 440px, 740px"
+                                className="object-contain object-left"
+                            />
+                        </div>
+
+                        {/* RIGHT: Date */}
+                        <p className="text-center md:text-right text-[11px] sm:text-xs text-gray-600 tracking-widest whitespace-nowrap">
+                            {new Date().toLocaleDateString("bn-BD", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            })}
                         </p>
                     </div>
                 </div>
             </div>
-            
+
             {/* Navigation Menu */}
             <div className='bg-gray-100 border-b border-gray-300'>
                 <div className='container mx-auto px-4'>

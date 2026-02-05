@@ -11,11 +11,11 @@ export default function JournalistOperation({role, username}) {
     return (
         <div>
             {/* Tab Navigation */}
-            <div className="border-b-2 border-gray-300 p-4">
+            <div className="border-b-2 border-gray-300 p-3 md:p-4">
                 <div className="flex gap-2 flex-wrap">
 
                     <button 
-                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                        className={`px-3 md:px-4 py-2 font-bold uppercase text-xs md:text-sm tracking-wide transition-colors ${
                             activeTab === 'uploadNews' 
                                 ? 'bg-black text-white' 
                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -25,7 +25,7 @@ export default function JournalistOperation({role, username}) {
                         সংবাদ আপলোড
                     </button>
                     <button 
-                        className={`px-4 py-2 font-bold uppercase text-sm tracking-wide transition-colors ${
+                        className={`px-3 md:px-4 py-2 font-bold uppercase text-xs md:text-sm tracking-wide transition-colors ${
                             activeTab === 'manageNews' 
                                 ? 'bg-black text-white' 
                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -38,7 +38,7 @@ export default function JournalistOperation({role, username}) {
             </div>
 
             {/* Tab Content */}
-            <div className="p-6">
+            <div className="p-4 md:p-6">
                 {activeTab === 'uploadNews' && <NewsUploadForm />}
                 {activeTab === 'manageNews' && <NewsList role={role} journalistUsername={username} />}
 
