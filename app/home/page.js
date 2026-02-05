@@ -10,54 +10,61 @@ import { fetchNewsFromDB } from '@/lib/newsInteractions';
 export default function home() {
 
   const [news, SetNews] = useState([]);
+  const [todayNews, SetTodayNews] = useState([]);
+  const [tickerItems, SetTickerItems] = useState([]);
+  const [featuredNews, SetFeaturedNews] = useState([]);
+  const [sideStories, SetSideStories] = useState([]);
 
   useEffect(() => {
-
     handleFetchNews();
   }, [])
 
   async function handleFetchNews() {
+
     const newsFromDb = await fetchNewsFromDB();
     SetNews(newsFromDb);
+    const todayNewsFiltered = newsFromDb.filter(item => {
+      if (!item.publishedAt) return false;
+      const today = new Date().toISOString().slice(0, 10);
+      return new Date(item.publishedAt).toISOString().slice(0, 10) === today;
+    });
+    SetTodayNews(todayNewsFiltered);
+    SetTickerItems(todayNewsFiltered.filter(item => item.featured === true).map(item => item.title));
+
+    SetFeaturedNews(newsFromDb.filter(item => item.featured === true));
+    SetSideStories(newsFromDb.filter(item => item.featured === true).filter((item, index) => index < 4 && index > 0));
   }
 
   const navCategories = [
-    { label: 'সর্বশেষ', href: '#' },
-    { label: 'বাংলাদেশ', href: '#' },
-    { label: 'রাজনীতি', href: '#' },
-    { label: 'বিশ্ব', href: '#' },
-    { label: 'বাণিজ্য', href: '#' },
-    { label: 'মতামত', href: '#' },
-    { label: 'খেলা', href: '#' },
-    { label: 'বিনোদন', href: '#' },
-    { label: 'চাকরি', href: '#' },
-    { label: 'জীবনযাপন', href: '#' },
+    { label: 'বাংলাদেশ' },
+    { label: 'রাজনীতি' },
+    { label: 'বিশ্ব' },
+    { label: 'বাণিজ্য' },
+    { label: 'মতামত' },
+    { label: 'খেলা' },
+    { label: 'বিনোদন' },
+    { label: 'চাকরি' },
+    { label: 'জীবনযাপন' },
   ];
 
 
-  // Top navigation categories (Bangla).
+  console.log(tickerItems);
 
 
-  // Headlines for the scrolling ticker.
-  const tickerItems = news.filter(item => item.category === "সর্বশেষ").map(item => item.title)
-  // Four smaller stories displayed beside the hero article.
-  const featuredNews = news.filter(item => item.featured === true)
-  const sideStories = featuredNews.filter((item, index) => index < 4 && index > 0);
 
   return (
     <main className="bg-[#f8f7f4] min-h-screen">
-      {/* Breaking News Ticker */}
       <div className="bg-black text-white border-y-2 border-black py-2 overflow-hidden">
         <div className="container mx-auto px-4 flex gap-3 items-center">
-          <span className="bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-wide">
-            সর্বশেষ
+          <span className="bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-wide flex-shrink-0">
+            শিরোনাম
           </span>
-          <div className="flex gap-8 animate-marquee whitespace-nowrap">
-            {tickerItems.map((item, index) => (
-              <span key={index} className="text-sm">
-                {item}
-              </span>
-            ))}
+          <div className="flex-1 overflow-hidden">
+            <div className="flex w-max gap-8 whitespace-nowrap animate-marquee hover:[animation-play-state:paused]">
+              {tickerItems.map((item, i) => (
+                <span key={i} className="text-sm inline-block">{item}</span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -97,6 +104,47 @@ export default function home() {
           </div>
         </div>
       </section>
+      {/* latest news */}
+      <section className="container mx-auto px-4 py-6 border-b border-gray-300">
+        <h3 className="text-2xl font-bold border-b-2 border-black pb-2 mb-4 uppercase tracking-wide">
+          {"সর্বশেষ খবর"}
+        </h3>
+        <div className="grid md:grid-cols-3 gap-6">
+          {(Array.isArray(todayNews) && todayNews.length > 0 )? todayNews.map((newItem, index) => (
+            index < 5 && <article
+              key={newItem._id}
+              className="bg-white border border-gray-300 overflow-hidden hover:shadow-lg transition-shadow"
+            >
+              <div className="relative h-48 border-b border-gray-300">
+                <Image
+                  src={newItem.thumbnailPath}
+                  alt={newItem.category || "news"}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-700 border-b border-gray-400 inline-block pb-1 mb-2">
+                  {newItem.category}
+                </span>
+                <h4 className="text-lg font-bold leading-tight mb-2">
+                  {newItem.title}
+                </h4>
+                <p className="text-sm text-gray-700 leading-relaxed line-clamp-3 mb-3">
+                  {newItem.content}
+                </p>
+                <Link
+                  href={`/home/${encodeURIComponent(newItem.category)}/${encodeURIComponent(newItem._id)}`}
+                  className="text-xs font-semibold uppercase tracking-wide hover:underline"
+                >
+                  বিস্তারিত পড়ুন →
+                </Link>
+              </div>
+            </article>
+          )): <p className="text-lg font-bold leading-tight mb-2"> No new News availabe today</p>}
+        </div>
+      </section>
 
       {/* Category Sections */}
       {navCategories.map(cat => (
@@ -130,7 +178,7 @@ export default function home() {
                   <p className="text-sm text-gray-700 leading-relaxed line-clamp-3 mb-3">
                     {newItem.content}
                   </p>
-                  <Link 
+                  <Link
                     href={`/home/${encodeURIComponent(newItem.category)}/${encodeURIComponent(newItem._id)}`}
                     className="text-xs font-semibold uppercase tracking-wide hover:underline"
                   >

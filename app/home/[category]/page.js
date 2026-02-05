@@ -1,12 +1,18 @@
-import { fetchNewsByCategoryFromDB } from "@/lib/newsInteractions";
+import { fetchNewsByCategoryFromDB, fetchOnlyLatestNewsFromDB } from "@/lib/newsInteractions";
 import ShowNewsInBetweenPage from "@/app/View/ShowNewsInBetweenPage";
 import Pagination from "@/app/View/Pagination";
 
 export default async function CategoryPage({ params }) {
   const { category } = await params;
   const actualCategory = decodeURIComponent(category);
+  let data = [];
 
-  const data = await fetchNewsByCategoryFromDB(actualCategory);
+  if (actualCategory === "সর্বশেষ") {
+    data = await fetchOnlyLatestNewsFromDB();
+  } else {
+    data = await fetchNewsByCategoryFromDB(actualCategory);
+  }
+
   const categoryWiseNews = data?.newsItems || [];
   const totalPages = Math.ceil(data?.count / 12) || 1;
 

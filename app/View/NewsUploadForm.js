@@ -33,7 +33,7 @@ export default function NewsUploadForm() {
                     Category:
                     <select defaultValue={`--Select Category--`} name="category">
                         <option value="--Select Category--" disabled>--Select Category--</option>
-                        <option value="সর্বশেষ">সর্বশেষ</option>
+                        {/* <option value="সর্বশেষ">সর্বশেষ</option> */}
                         <option value="বাংলাদেশ">বাংলাদেশ</option>
                         <option value="রাজনীতি">রাজনীতি</option>
                         <option value="বিশ্ব">বিশ্ব</option>

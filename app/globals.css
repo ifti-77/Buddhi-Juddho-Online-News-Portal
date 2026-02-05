@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+@keyframes marquee {
+  0% {
+    transform: translateX(220%);
+  }
+
+  100% {
+    transform: translateX(-150%);
+  }
+
+}
+
+@utility animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+
 :root {
   --background: #f8f7f4;
   --foreground: #1a1a1a;
@@ -20,7 +36,9 @@ body {
 }
 
 /* Newspaper-style headings */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: 'Georgia', 'Times New Roman', serif;
   font-weight: 700;
   line-height: 1.2;
