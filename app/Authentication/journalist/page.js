@@ -1,5 +1,6 @@
 import JournalistOperation from '@/app/View/JournalistOperation';
 import LogoutOperation from '@/app/View/LogoutOperation'
+import ProfileUpdateOperation from '@/app/View/ProfileUpdateOperation';
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 
@@ -24,6 +25,7 @@ export default async function JournalistPage() {
                 <p className="text-lg">
                   স্বাগতম, <span className="font-bold">{session.name}</span>
                 </p>
+                <ProfileUpdateOperation/>
                 <LogoutOperation />
               </div>
             </div>

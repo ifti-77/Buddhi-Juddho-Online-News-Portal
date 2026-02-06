@@ -7,7 +7,7 @@ export async function checkCredentials(formData) {
   const username = (formData.get("username") || "").toString().trim();
   const password = (formData.get("password") || "").toString();
 
-  const res = await fetch("http://localhost:3000/api/auth/login", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/login`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ username, password }),
@@ -23,6 +23,7 @@ export async function checkCredentials(formData) {
 
   const session = await getSession();
   session.isLoggedIn = true;
+  session.userId = data.user._id;
   session.username = data.user.username;
   session.name = data.user.name;
   session.role = data.user.role;

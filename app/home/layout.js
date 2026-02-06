@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Footer from "../View/Footer";
 
 export default function homeLayout({ children }) {
     const navCategories = [
@@ -27,6 +28,7 @@ export default function homeLayout({ children }) {
             </header>
             <hr />
             {children}
+            <Footer/>
         </div>
 
     );

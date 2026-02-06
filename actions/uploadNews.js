@@ -4,14 +4,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { mkdir, writeFile, unlink } from "node:fs/promises";
 import { getSession } from "@/lib/session";
-// function getBaseUrl() {
-//   // Required because this runs on the server (Node) — relative fetch can fail
-//   // in many cases; absolute URL is safer. :contentReference[oaicite:2]{index=2}
-//   if (process.env.APP_URL) return process.env.APP_URL;
-//   if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL;
-//   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-//   return "http://localhost:3000";
-// }
+
 
 export async function uploadNews(prevState, formData) {
   const errors = {};
@@ -57,9 +50,9 @@ export async function uploadNews(prevState, formData) {
     return { ok: false, errors, message: "Please fix the errors below." };
   }
 
-  // ---- Upload + save ----
+
   try {
-    // Save file into /public/uploads so it is accessible as /uploads/<filename>
+    
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
     await mkdir(uploadsDir, { recursive: true });
 
@@ -78,7 +71,7 @@ export async function uploadNews(prevState, formData) {
     const thumbnailUrl = `/uploads/${filename}`;
 
     // const baseUrl = getBaseUrl();
-    const result = await fetch(`http://localhost:3000/api/News/`, {
+    const result = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/News/`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
