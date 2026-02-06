@@ -2,6 +2,7 @@
 
 import { getSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function addJournalist(formData) {
   const name = (formData.get("name") || "").toString().trim();
@@ -39,9 +40,10 @@ export async function UpdateJournalistProfile(formData) {
   const session = await getSession();
 
   const id = session?.userId;
-  const newpassword = formData.get("newPassword")?.toString();
-  const currentpassword = formData.get("currentPassword")?.toString();
-  if (!id || !newpassword || !currentpassword) {
+  const newName = formData.get("newName")?.toString().trim();
+  const newpassword = formData.get("newPassword")?.toString().trim();
+  const currentpassword = formData.get("currentPassword")?.toString().trim();
+  if (!id || !newName || !currentpassword) {
     return { ok: false, error: "All fields are required" };
   }
 
@@ -61,7 +63,7 @@ export async function UpdateJournalistProfile(formData) {
   const updateRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/journalists/update/`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id, newPassword: newpassword }),
+    body: JSON.stringify({ id, newName: newName, newPassword: newpassword? newpassword : currentpassword }),
     cache: "no-store",
   });
 
@@ -70,6 +72,29 @@ export async function UpdateJournalistProfile(formData) {
   if (!updateRes.ok || updateResult.ok === false) {
     return { ok: false, error: updateResult.error || "Failed to update password" };
   }
+  session.name = newName;
+  console.log(session.name);
+  await session.save();
+  
+  revalidatePath("/Authentication", "layout")
+  // return updateResult;
+  redirect("/Authentication");
+}
 
-  return updateResult;
+export async function getAvailableUserName() {
+
+    try
+    {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/journalists/available/lastUserName/`)
+        const data = await response.json()
+
+        if(!data.ok) return data.message;
+
+        return data.availableUserName;
+
+    }catch(error)
+    {
+        return "Error: "+ error.message;
+    }
+    
 }

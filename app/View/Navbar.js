@@ -36,8 +36,6 @@ const Navbar = async () => {
                     </div>
                 </div>
             </div>
-
-            {/* Navigation Menu */}
             <div className='bg-gray-100 border-b border-gray-300'>
                 <div className='container mx-auto px-4'>
                     <ul className='flex flex-row gap-6 justify-center py-2 text-sm uppercase tracking-wide font-semibold'>
@@ -52,7 +50,7 @@ const Navbar = async () => {
                         </li>
                         {session.isLoggedIn ? (
                             <li className='hover:text-gray-600'>
-                                <Link href='/Authentication/admin'>ড্যাশবোর্ড</Link>
+                                <Link href='/Authentication/'>ড্যাশবোর্ড</Link>
                             </li>
                         ) : (
                             <li className='hover:text-gray-600'>

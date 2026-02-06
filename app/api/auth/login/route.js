@@ -21,7 +21,7 @@ export async function POST(req) {
 
   await dbConnect();
   const user = await journalists.findOne({ username, password });
-  if (!user) return Response.json({ ok: false, error: "Invalid login" }, { status: 401 });
+  if (!user) return Response.json({ ok: false, error: "Invalid username or password" }, { status: 401 });
 
   return Response.json({ ok: true, user: user }, { status: 200 });
 }

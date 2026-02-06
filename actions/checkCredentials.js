@@ -3,7 +3,7 @@
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
-export async function checkCredentials(formData) {
+export async function checkCredentials(prevState, formData) {
   const username = (formData.get("username") || "").toString().trim();
   const password = (formData.get("password") || "").toString();
 
@@ -14,12 +14,20 @@ export async function checkCredentials(formData) {
     cache: "no-store",
   });
 
-  const data = await res.json(); 
+  const data = await res.json();
 
-  // IMPORTANT: if login failed, user won't exist
   if (!res.ok || !data.ok) {
-    return { ok: false, error: data.error || "Invalid login" };
+    return { ok: false, error: data.error || "Invalid username or password" };
   }
+
+
+  if (data.user.status !== "active") {
+    return {
+      ok: false,
+      error: "আপনার অ্যাকাউন্টটি সক্রিয় নয়, অনুগ্রহ করে প্রধান সম্পাদকের সাথে যোগাযোগ করুন!",
+    };
+  }
+
 
   const session = await getSession();
   session.isLoggedIn = true;
@@ -29,22 +37,10 @@ export async function checkCredentials(formData) {
   session.role = data.user.role;
   session.status = data.user.status;
   await session.save();
-  console.log(session);
-  
-  if(session.isLoggedIn && session.role === "admin")
-  {  
-    redirect("/Authentication/admin") 
-  }
-  else if(session.isLoggedIn && session.role === "editor")
-  {
-    redirect("/Authentication/editor")
-  }
-  else if(session.isLoggedIn && session.role === "reporter")
-  {
-    redirect("/Authentication/journalist");
-  }else
-  {
-    redirect("/Authentication");
-  }
 
+  if (data.user.role === "admin") redirect("/Authentication/admin");
+  if (data.user.role === "editor") redirect("/Authentication/editor");
+  if (data.user.role === "reporter") redirect("/Authentication/journalist");
+
+  redirect("/Authentication");
 }

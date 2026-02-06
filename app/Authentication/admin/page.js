@@ -2,6 +2,7 @@ import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import LogoutOperation from '@/app/View/LogoutOperation';
 import AdminOperation from '@/app/View/AdminOperation';
+import ProfileUpdateOperation from '@/app/View/ProfileUpdateOperation';
 
 export default async function admin() {
   
@@ -22,6 +23,7 @@ export default async function admin() {
             <p className="text-lg">
               স্বাগতম, <span className="font-bold">{session.name}</span>
             </p>
+            <ProfileUpdateOperation name={session.name} />
             <LogoutOperation />
           </div>
         </div>

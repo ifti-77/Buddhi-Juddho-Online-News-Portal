@@ -17,14 +17,11 @@ export default function NewsUploadForm() {
     return (
         <div className="w-full mx-auto">
             <div className="bg-white border-2 border-gray-300 shadow-lg">
-                {/* Header */}
                 <div className="bg-black  px-4 md:px-6 py-3 md:py-4 border-b-4 border-gray-800">
                     <h2 className=" !text-white text-xl md:text-2xl font-bold uppercase tracking-wide">সংবাদ আপলোড করুন</h2>
                 </div>
 
-                {/* Form */}
                 <form action={formAction} className="p-4 md:p-6 space-y-4 md:space-y-6">
-                    {/* Title Field */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             শিরোনাম *
@@ -38,7 +35,6 @@ export default function NewsUploadForm() {
                         {fieldErrors('title')}
                     </div>
 
-                    {/* Content Field */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             বিস্তারিত *
@@ -52,7 +48,6 @@ export default function NewsUploadForm() {
                         {fieldErrors('content')}
                     </div>
 
-                    {/* Category Field */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             বিভাগ *
@@ -75,8 +70,6 @@ export default function NewsUploadForm() {
                         </select>
                         {fieldErrors("category")}
                     </div>
-
-                    {/* Thumbnail Upload */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             প্রধান ছবি *

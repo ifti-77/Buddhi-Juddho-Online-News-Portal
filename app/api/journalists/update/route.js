@@ -24,23 +24,23 @@ export async function POST(request) {
 }
 
 export async function PUT(request) {
-try {
+    try {
         await dbConnect();
-        const { id, newPassword } = await request.json();
-        if (!id || !newPassword) {
-            return new Response(JSON.stringify({ ok: false, error: "ID and new password are required" }), { status: 400, headers: { "Content-Type": "application/json" } })
+        const { id, newName, newPassword } = await request.json();
+        if (!id || !newName || !newPassword ) {
+            return new Response(JSON.stringify({ ok: false, error: "ID, new name, and new password are required" }), { status: 400, headers: { "Content-Type": "application/json" } })
         }
 
-        const journalist = await journalists.updateOne({ _id: id }, { $set: { password: newPassword } });
+        const journalist = await journalists.updateOne({ _id: id }, { $set: { name: newName , password: newPassword } });
 
         if (!journalist) {
             return new Response(JSON.stringify({ ok: false, error: "Invalid ID or password" }), { status: 401, headers: { "Content-Type": "application/json" } })
         }
-        
-        return new Response(JSON.stringify({ ok: true, message: "Password updated successfully" }), { status: 200, headers: { "Content-Type": "application/json" } })
+
+        return new Response(JSON.stringify({ ok: true, message: "Profile updated successfully" }), { status: 200, headers: { "Content-Type": "application/json" } })
 
 
     } catch (error) {
-        return new Response(JSON.stringify({ ok: false, error: "An error occurred while updating the password" }), { status: 500, headers: { "Content-Type": "application/json" } })
+        return new Response(JSON.stringify({ ok: false, error: "An error occurred while updating the profile" }), { status: 500, headers: { "Content-Type": "application/json" } })
     }
 }

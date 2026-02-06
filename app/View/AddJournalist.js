@@ -1,18 +1,42 @@
+"use client"
+import { addJournalist , getAvailableUserName} from "@/actions/JournalistAction";
+import { useEffect, useState } from "react";
 
-import { addJournalist } from "@/actions/addJournalist";
 
 export default function AddJournalist() {
+const [availableUserName, setAvailableUserName] = useState('')
+    useEffect(()=>{
+        async function getUserName(){
+            const userName = await getAvailableUserName();
+
+                setAvailableUserName(userName)
+            
+        }
+        getUserName();
+    },[])
+    
+    if(availableUserName.includes("Error")) return <div className="text-red-500 text-center mt-10">{availableUserName || "ইউজারনেম পাওয়া যায়নি, আবার চেষ্টা করুন!"}</div>
+    
+    const handleSubmit = async(formData)=>{
+        const result = await addJournalist(formData)
+        if(!result.ok)
+        {
+            alert ("সাংবাদিক তৈরী করা যায়নি: "+ result.error)
+            return
+        }
+
+        alert("সাংবাদিক সফলভাবে তৈরি হয়েছে");
+    }
+    
     return (
         <div className="w-full mx-auto">
             <div className="bg-white border-2 border-gray-300 shadow-lg">
-                {/* Header */}
+
                 <div className="bg-black  px-4 md:px-6 py-3 md:py-4 border-b-4 border-gray-800">
                     <h2 className="!text-white text-xl md:text-2xl font-bold uppercase tracking-wide">নতুন সাংবাদিক নিয়োগ</h2>
                 </div>
 
-                {/* Form */}
-                <form action={addJournalist} className="p-4 md:p-6 space-y-4 md:space-y-6">
-                    {/* Name Field */}
+                <form action={handleSubmit} className="p-4 md:p-6 space-y-4 md:space-y-6">
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             পুরো নাম *
@@ -25,22 +49,19 @@ export default function AddJournalist() {
                             placeholder="সাংবাদিকের পুরো নাম লিখুন..."
                         />
                     </div>
-
-                    {/* Username Field */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             ইউজারনেম *
                         </label>
                         <input 
                             type="text" 
-                            name="username" 
+                            name="username"
+                            disabled
+                            value={availableUserName || 'লোডিং হচ্ছে...'} 
                             required
                             className="w-full px-4 py-3 border-2 border-gray-300 focus:border-black focus:outline-none transition-colors text-lg"
-                            placeholder="ইউনিক ইউজারনেম লিখুন..."
                         />
                     </div>
-
-                    {/* Password Field */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             পাসওয়ার্ড *
@@ -53,8 +74,6 @@ export default function AddJournalist() {
                             placeholder="নিরাপদ পাসওয়ার্ড দিন..."
                         />
                     </div>
-
-                    {/* Role Field */}
                     <div className="border-b border-gray-200 pb-4">
                         <label className="block text-gray-800 font-bold mb-2 uppercase text-sm tracking-wide">
                             পদবী *
@@ -68,8 +87,6 @@ export default function AddJournalist() {
                             <option value="editor">সম্পাদক (Editor)</option>
                         </select>
                     </div>
-
-                    {/* Submit Button */}
                     <div className="pt-4">
                         <button 
                             type="submit"
